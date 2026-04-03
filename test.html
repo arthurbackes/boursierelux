@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lux UCL</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #ffffff;
+            --text-muted: #aaaaaa;
+            --accent-up: #4caf50;
+            --accent-down: #f44336;
+            --primary: #2196f3;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 { text-align: center; color: var(--primary); margin-bottom: 30px; }
+
+        /* Section Administration */
+        .admin-panel {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .admin-panel input {
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            background: #2a2a2a;
+            color: white;
+            font-size: 16px;
+        }
+
+        .admin-panel button {
+            padding: 10px 20px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .admin-panel button:hover { background-color: #1976d2; }
+
+        /* Grille du marché */
+        .market-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .beer-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border-top: 4px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .btn-delete {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .btn-delete:hover { color: var(--accent-down); }
+
+        .beer-name { font-size: 24px; font-weight: bold; margin-bottom: 10px; margin-top: 5px; }
+        .beer-price { font-size: 48px; font-weight: bold; color: var(--accent-up); margin: 15px 0; }
+        .beer-stats { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; }
+
+        /* Contrôles Barman */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #2a2a2a;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .btn-action {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 4px;
+            font-size: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+        }
+
+        .btn-minus { background-color: var(--accent-down); }
+        .btn-plus { background-color: var(--accent-up); }
+        .btn-minus:active, .btn-plus:active { transform: scale(0.95); }
+        .sales-counter { font-size: 18px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>LUX UCL 📉</h1>
+
+    <div class="admin-panel">
+        <input type="text" id="beerName" placeholder="Nom de la bière" required>
+        <input type="number" id="startPrice" placeholder="Prix de départ (€)" step="0.1" min="0" required>
+        <input type="number" id="minPrice" placeholder="Plafond Minimum (€)" step="0.1" min="0" required>
+        <button onclick="addNewBeer()">Ajouter la bière</button>
+    </div>
+
+    <div class="market-board" id="marketBoard">
+        </div>
+
+    <script>
+        const MAX_PRICE = 2.50;
+        const STEP = 0.10;
+        
+        // --- REGLAGES DE L'ALGORITHME ---
+        const SALES_TO_INCREASE = 4; // Il faut vendre 4 bières identiques pour que son prix monte de 0.10€
+        const SALES_FOR_MARKET_DROP = 10; // Il faut 10 ventes au total (toutes bières confondues) pour faire chuter les autres prix
+
+        let beers = [];
+        let globalSalesCount = 0;
+
+        function roundPrice(price) {
+            return Math.round(price * 10) / 10;
+        }
+
+        function addNewBeer() {
+            const nameInput = document.getElementById('beerName');
+            const startInput = document.getElementById('startPrice');
+            const minInput = document.getElementById('minPrice');
+
+            const name = nameInput.value.trim();
+            const startPrice = parseFloat(startInput.value);
+            const minPrice = parseFloat(minInput.value);
+
+            if (!name || isNaN(startPrice) || isNaN(minPrice)) {
+                alert("Veuillez remplir tous les champs correctement.");
+                return;
+            }
+
+            if (startPrice > MAX_PRICE || minPrice > MAX_PRICE || minPrice > startPrice) {
+                alert("Erreur : Les prix doivent être <= 2.50€ et le minimum logique.");
+                return;
+            }
+
+            beers.push({
+                id: Date.now(),
+                name: name,
+                currentPrice: roundPrice(startPrice),
+                minPrice: roundPrice(minPrice),
+                sales: 0
+            });
+            
+            nameInput.value = '';
+            startInput.value = '';
+            minInput.value = '';
+
+            renderBoard();
+        }
+
+        function deleteBeer(id) {
+            if (confirm("Es-tu sûr de vouloir supprimer cette bière du tableau ?")) {
+                beers = beers.filter(b => b.id !== id);
+                renderBoard();
+            }
+        }
+
+        function addSale(id) {
+            const beer = beers.find(b => b.id === id);
+            if (!beer) return;
+
+            beer.sales++;
+            globalSalesCount++;
+
+            // La bière monte uniquement si elle atteint le palier de ventes
+            if (beer.sales % SALES_TO_INCREASE === 0) {
+                if (beer.currentPrice + STEP <= MAX_PRICE) {
+                    beer.currentPrice = roundPrice(beer.currentPrice + STEP);
+                }
+            }
+
+            // Les autres baissent uniquement si le palier global est atteint
+            if (globalSalesCount % SALES_FOR_MARKET_DROP === 0) {
+                beers.forEach(b => {
+                    if (b.id !== id && b.currentPrice - STEP >= b.minPrice) {
+                        b.currentPrice = roundPrice(b.currentPrice - STEP);
+                    }
+                });
+            }
+
+            renderBoard();
+        }
+
+        function removeSale(id) {
+            const beer = beers.find(b => b.id === id);
+            if (!beer || beer.sales <= 0) return;
+
+            // Si la vente annulée correspondait exactement à un palier, on redescend le prix
+            if (beer.sales % SALES_TO_INCREASE === 0) {
+                if (beer.currentPrice - STEP >= beer.minPrice) {
+                    beer.currentPrice = roundPrice(beer.currentPrice - STEP);
+                }
+            }
+
+            beer.sales--;
+            globalSalesCount = Math.max(0, globalSalesCount - 1);
+            
+            renderBoard();
+        }
+
+        function renderBoard() {
+            const board = document.getElementById('marketBoard');
+            board.innerHTML = '';
+
+            beers.forEach(beer => {
+                const card = document.createElement('div');
+                card.className = 'beer-card';
+                
+                let priceColor = 'var(--accent-up)';
+                if (beer.currentPrice === MAX_PRICE) priceColor = '#ff9800'; 
+                if (beer.currentPrice === beer.minPrice) priceColor = 'var(--primary)';
+
+                card.innerHTML = `
+                    <button class="btn-delete" onclick="deleteBeer(${beer.id})">✖</button>
+                    <div class="beer-name">${beer.name}</div>
+                    <div class="beer-price" style="color: ${priceColor};">
+                        ${beer.currentPrice.toFixed(2)} €
+                    </div>
+                    <div class="beer-stats">
+                        Min: ${beer.minPrice.toFixed(2)} € | Max: 2.50 €
+                    </div>
+                    <div class="controls">
+                        <button class="btn-action btn-minus" onclick="removeSale(${beer.id})">-</button>
+                        <span class="sales-counter">Ventes : ${beer.sales}</span>
+                        <button class="btn-action btn-plus" onclick="addSale(${beer.id})">+</button>
+                    </div>
+                `;
+                board.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
