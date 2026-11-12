@@ -5,140 +5,276 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lux UCL</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap');
+
         :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-main: #ffffff;
-            --text-muted: #aaaaaa;
-            --accent-up: #4caf50;
-            --accent-down: #f44336;
-            --primary: #2196f3;
+            --bg-color: #000000;
+            --surface: #101010;
+            --surface-raised: #191919;
+            --line: #303030;
+            --text-main: #f5f5f5;
+            --text-muted: #b0b0b0;
+            --accent-up: #48e08d;
+            --accent-down: #ff665c;
+            --primary: #f5c451;
+            --blue: #68b7ff;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 24px clamp(16px, 4vw, 56px) 48px;
         }
 
-        h1 { text-align: center; color: var(--primary); margin-bottom: 30px; }
+        .page-shell { max-width: 1240px; margin: 0 auto; }
 
-        /* Section Administration */
-        .admin-panel {
-            background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
+        .topbar {
             display: flex;
-            gap: 15px;
-            justify-content: center;
             align-items: center;
-            flex-wrap: wrap;
+            gap: 18px;
+            padding-bottom: 22px;
+            border-bottom: 1px solid var(--line);
         }
 
-        .admin-panel input {
-            padding: 10px;
-            border: 1px solid #333;
-            border-radius: 4px;
-            background: #2a2a2a;
-            color: white;
-            font-size: 16px;
+        .logo { width: 132px; height: 132px; object-fit: contain; }
+
+        .brand-copy { flex: 1; }
+        .eyebrow {
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.13em;
+            margin: 0 0 5px;
+            text-transform: uppercase;
         }
 
-        .admin-panel button {
-            padding: 10px 20px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 4px;
+        h1 {
+            color: var(--text-main);
+            font-size: clamp(24px, 4vw, 36px);
+            letter-spacing: -0.02em;
+            margin: 0;
+        }
+
+        .live-badge {
+            align-items: center;
+            border: 1px solid rgba(72, 224, 141, 0.45);
+            border-radius: 999px;
+            color: var(--accent-up);
+            display: flex;
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            gap: 7px;
+            padding: 7px 10px;
+        }
+
+        .live-badge::before {
+            background: var(--accent-up);
+            border-radius: 50%;
+            content: '';
+            height: 6px;
+            width: 6px;
+        }
+
+        .fullscreen-btn {
+            background: transparent;
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            color: var(--text-main);
             cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-            transition: 0.2s;
+            font-size: 19px;
+            height: 36px;
+            line-height: 1;
+            padding: 0;
+            width: 36px;
         }
 
-        .admin-panel button:hover { background-color: #1976d2; }
+        .fullscreen-btn:hover { border-color: var(--primary); color: var(--primary); }
 
-        /* Grille du marché */
+        .toolbar {
+            align-items: center;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 9px;
+            display: flex;
+            gap: 8px;
+            margin: 24px 0 12px;
+            padding: 10px;
+        }
+
+        .toolbar input {
+            background: var(--surface-raised);
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            color: var(--text-main);
+            font: inherit;
+            font-size: 13px;
+            min-width: 0;
+            outline: none;
+            padding: 10px 11px;
+        }
+
+        .toolbar input:focus { border-color: var(--blue); }
+        .toolbar input::placeholder { color: var(--text-muted); }
+
+        .toolbar button,
+        .backup-panel button {
+            background: var(--primary);
+            border: 0;
+            border-radius: 5px;
+            color: #20190d;
+            cursor: pointer;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 10px 13px;
+            white-space: nowrap;
+        }
+
+        .toolbar button:hover,
+        .backup-panel button:hover { filter: brightness(1.08); }
+
+        .backup-panel {
+            align-items: center;
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            min-height: 28px;
+        }
+
+        .backup-panel button {
+            background: transparent;
+            border: 1px solid var(--line);
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 500;
+            padding: 6px 9px;
+        }
+
+        .save-status { color: var(--text-muted); font-size: 11px; margin-right: auto; }
+
+        .market-heading {
+            align-items: baseline;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            margin: 34px 0 14px;
+            padding-bottom: 9px;
+        }
+
+        .market-heading h2 { font-size: 18px; margin: 0; }
+        .market-heading span { color: var(--text-muted); font-size: 12px; }
+
         .market-board {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            gap: 12px;
         }
 
         .beer-card {
-            background-color: var(--card-bg);
+            background: var(--surface);
+            border: 1px solid var(--line);
             border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            border-top: 4px solid var(--primary);
+            border-top: 2px solid var(--blue);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            gap: 14px;
+            padding: 17px;
             position: relative;
         }
 
         .btn-delete {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
+            background: transparent;
+            border: 0;
             color: var(--text-muted);
             cursor: pointer;
-            font-size: 16px;
-            transition: 0.2s;
+            font-size: 14px;
+            padding: 4px;
+            position: absolute;
+            right: 10px;
+            top: 9px;
         }
 
         .btn-delete:hover { color: var(--accent-down); }
 
-        .beer-name { font-size: 24px; font-weight: bold; margin-bottom: 10px; margin-top: 5px; }
-        .beer-price { font-size: 48px; font-weight: bold; color: var(--accent-up); margin: 15px 0; }
-        .beer-stats { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; }
+        .beer-topline { align-items: center; display: flex; justify-content: space-between; padding-right: 22px; }
+        .beer-name { font-size: 17px; font-weight: 700; }
+        .beer-change { color: var(--accent-up); font-family: 'Space Mono', monospace; font-size: 11px; }
+        .beer-price { color: var(--accent-up); font-family: 'Space Mono', monospace; font-size: 31px; font-weight: 700; letter-spacing: -0.06em; }
+        .beer-stats { color: var(--text-muted); font-size: 11px; }
 
-        /* Contrôles Barman */
         .controls {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            background: #2a2a2a;
-            padding: 10px;
-            border-radius: 6px;
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
         }
 
         .btn-action {
-            width: 40px;
-            height: 40px;
-            border: none;
-            border-radius: 4px;
-            font-size: 20px;
+            border: 0;
+            border-radius: 5px;
+            color: #071018;
             cursor: pointer;
-            font-weight: bold;
-            color: white;
+            font-family: 'Space Mono', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            height: 34px;
+            width: 42px;
         }
 
-        .btn-minus { background-color: var(--accent-down); }
-        .btn-plus { background-color: var(--accent-up); }
-        .btn-minus:active, .btn-plus:active { transform: scale(0.95); }
-        .sales-counter { font-size: 18px; font-weight: bold; }
+        .btn-minus { background: rgba(255, 109, 97, 0.2); color: var(--accent-down); }
+        .btn-plus { background: rgba(78, 214, 176, 0.2); color: var(--accent-up); }
+        .btn-action:hover { filter: brightness(1.2); }
+        .sales-counter { color: var(--text-muted); font-size: 12px; }
+
+        @media (max-width: 700px) {
+            body { padding: 16px 12px 32px; }
+            .topbar { gap: 12px; }
+            .logo { height: 92px; width: 92px; }
+            .live-badge { font-size: 0; padding: 8px; }
+            .live-badge::before { height: 7px; width: 7px; }
+            .toolbar { align-items: stretch; flex-wrap: wrap; }
+            .toolbar input, .toolbar button { flex: 1 1 42%; }
+            .toolbar button { flex-basis: 100%; }
+            .backup-panel { flex-wrap: wrap; justify-content: flex-start; }
+            .save-status { flex-basis: 100%; }
+        }
     </style>
 </head>
 <body>
+    <main class="page-shell">
+        <header class="topbar">
+            <img class="logo" src="./Gemini_Generated_Image_blznxfblznxfblzn.jpeg" alt="LUX UCL">
+            <div class="brand-copy">
+                <p class="eyebrow">Semaine de la Bière</p>
+                <h1>Semaine de la Bière</h1>
+            </div>
+            <button class="fullscreen-btn" id="fullscreenBtn" onclick="toggleFullscreen()" aria-label="Activer le plein écran" title="Plein écran">⛶</button>
+            <div class="live-badge">LIVE</div>
+        </header>
 
-    <h1>LUX UCL 📉</h1>
+        <section class="toolbar" aria-label="Ajouter une bière">
+            <input type="text" id="beerName" placeholder="Nom" required>
+            <input type="number" id="startPrice" placeholder="Départ €" step="0.1" min="0" required>
+            <input type="number" id="minPrice" placeholder="Minimum €" step="0.1" min="0" required>
+            <button onclick="addNewBeer()">+ Ajouter</button>
+        </section>
 
-    <div class="admin-panel">
-        <input type="text" id="beerName" placeholder="Nom de la bière" required>
-        <input type="number" id="startPrice" placeholder="Prix de départ (€)" step="0.1" min="0" required>
-        <input type="number" id="minPrice" placeholder="Plafond Minimum (€)" step="0.1" min="0" required>
-        <button onclick="addNewBeer()">Ajouter la bière</button>
-    </div>
-
-    <div class="market-board" id="marketBoard">
+        <div class="backup-panel">
+            <div class="save-status" id="saveStatus">Sauvegarde automatique</div>
+            <button onclick="exportData()">Exporter</button>
+            <button onclick="document.getElementById('importFile').click()">Importer</button>
+            <input type="file" id="importFile" accept="application/json" hidden onchange="importData(event)">
         </div>
+
+        <div class="market-heading">
+            <h2>Cotations</h2>
+            <span>Prix en direct · € / verre</span>
+        </div>
+
+        <div class="market-board" id="marketBoard"></div>
+    </main>
 
     <script>
         const MAX_PRICE = 2.50;
@@ -147,12 +283,56 @@
         // --- REGLAGES DE L'ALGORITHME ---
         const SALES_TO_INCREASE = 4; // Il faut vendre 4 bières identiques pour que son prix monte de 0.10€
         const SALES_FOR_MARKET_DROP = 10; // Il faut 10 ventes au total (toutes bières confondues) pour faire chuter les autres prix
+        const STORAGE_KEY = 'lux-ucl-market-state';
 
         let beers = [];
         let globalSalesCount = 0;
 
+        function recordPrice(beer, previousPrice) {
+            if (beer.currentPrice !== previousPrice) {
+                beer.history = Array.isArray(beer.history) ? beer.history : [previousPrice];
+                beer.history.push(beer.currentPrice);
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ beers, globalSalesCount }));
+            document.getElementById('saveStatus').textContent = 'Sauvegardé automatiquement';
+        }
+
+        function loadState() {
+            try {
+                const savedState = JSON.parse(localStorage.getItem(STORAGE_KEY));
+                if (!savedState || !Array.isArray(savedState.beers)) return;
+
+                beers = savedState.beers.filter(beer =>
+                    beer && typeof beer.id === 'number' && typeof beer.name === 'string' &&
+                    Number.isFinite(beer.currentPrice) && Number.isFinite(beer.minPrice) &&
+                    Number.isFinite(beer.sales)
+                ).map(beer => ({
+                    ...beer,
+                    history: Array.isArray(beer.history) && beer.history.length
+                        ? beer.history.filter(price => Number.isFinite(price))
+                        : [beer.currentPrice]
+                }));
+                globalSalesCount = Number.isFinite(savedState.globalSalesCount)
+                    ? Math.max(0, savedState.globalSalesCount)
+                    : beers.reduce((total, beer) => total + beer.sales, 0);
+            } catch (error) {
+                console.warn('Impossible de charger la sauvegarde locale.', error);
+            }
+        }
+
         function roundPrice(price) {
             return Math.round(price * 10) / 10;
+        }
+
+        function getPriceColor(beer) {
+            const priceRatio = Math.min(1, Math.max(0,
+                (beer.currentPrice - beer.minPrice) / (MAX_PRICE - beer.minPrice)
+            ));
+            const hue = 145 - (priceRatio * 140);
+            return `hsl(${hue} 75% 58%)`;
         }
 
         function addNewBeer() {
@@ -179,19 +359,22 @@
                 name: name,
                 currentPrice: roundPrice(startPrice),
                 minPrice: roundPrice(minPrice),
-                sales: 0
+                sales: 0,
+                history: [roundPrice(startPrice)]
             });
             
             nameInput.value = '';
             startInput.value = '';
             minInput.value = '';
 
+            saveState();
             renderBoard();
         }
 
         function deleteBeer(id) {
             if (confirm("Es-tu sûr de vouloir supprimer cette bière du tableau ?")) {
                 beers = beers.filter(b => b.id !== id);
+                saveState();
                 renderBoard();
             }
         }
@@ -204,21 +387,32 @@
             globalSalesCount++;
 
             // La bière monte uniquement si elle atteint le palier de ventes
+            const previousPrice = beer.currentPrice;
             if (beer.sales % SALES_TO_INCREASE === 0) {
                 if (beer.currentPrice + STEP <= MAX_PRICE) {
                     beer.currentPrice = roundPrice(beer.currentPrice + STEP);
                 }
             }
 
-            // Les autres baissent uniquement si le palier global est atteint
+            // Les trois bières les moins vendues baissent au palier global
             if (globalSalesCount % SALES_FOR_MARKET_DROP === 0) {
-                beers.forEach(b => {
-                    if (b.id !== id && b.currentPrice - STEP >= b.minPrice) {
-                        b.currentPrice = roundPrice(b.currentPrice - STEP);
+                const marketTargets = beers
+                    .filter(b => b.id !== id)
+                    .slice()
+                    .sort((firstBeer, secondBeer) => firstBeer.sales - secondBeer.sales)
+                    .slice(0, 3);
+
+                marketTargets.forEach(targetBeer => {
+                    const targetPreviousPrice = targetBeer.currentPrice;
+                    if (targetBeer.currentPrice - STEP >= targetBeer.minPrice) {
+                        targetBeer.currentPrice = roundPrice(targetBeer.currentPrice - STEP);
+                        recordPrice(targetBeer, targetPreviousPrice);
                     }
                 });
             }
 
+            recordPrice(beer, previousPrice);
+            saveState();
             renderBoard();
         }
 
@@ -227,6 +421,7 @@
             if (!beer || beer.sales <= 0) return;
 
             // Si la vente annulée correspondait exactement à un palier, on redescend le prix
+            const previousPrice = beer.currentPrice;
             if (beer.sales % SALES_TO_INCREASE === 0) {
                 if (beer.currentPrice - STEP >= beer.minPrice) {
                     beer.currentPrice = roundPrice(beer.currentPrice - STEP);
@@ -235,9 +430,73 @@
 
             beer.sales--;
             globalSalesCount = Math.max(0, globalSalesCount - 1);
-            
+
+            recordPrice(beer, previousPrice);
+            saveState();
             renderBoard();
         }
+
+        function exportData() {
+            const data = JSON.stringify({ beers, globalSalesCount }, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const downloadUrl = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = `lux-ucl-sauvegarde-${new Date().toISOString().slice(0, 10)}.json`;
+            link.click();
+            URL.revokeObjectURL(downloadUrl);
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const importedState = JSON.parse(reader.result);
+                    if (!importedState || !Array.isArray(importedState.beers)) {
+                        throw new Error('Format invalide');
+                    }
+                    beers = importedState.beers;
+                    globalSalesCount = Number.isFinite(importedState.globalSalesCount)
+                        ? Math.max(0, importedState.globalSalesCount)
+                        : beers.reduce((total, beer) => total + beer.sales, 0);
+                    saveState();
+                    renderBoard();
+                } catch (error) {
+                    alert('Cette sauvegarde est invalide.');
+                }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        function toggleFullscreen() {
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                const exitFullscreen = document.exitFullscreen || document.webkitExitFullscreen;
+                if (exitFullscreen) exitFullscreen.call(document);
+                return;
+            }
+
+            const page = document.documentElement;
+            const requestFullscreen = page.requestFullscreen || page.webkitRequestFullscreen;
+            if (requestFullscreen) {
+                const fullscreenPromise = requestFullscreen.call(page);
+                if (fullscreenPromise) fullscreenPromise.then(updateFullscreenButton).catch(() => {});
+            }
+        }
+
+        function updateFullscreenButton() {
+            const button = document.getElementById('fullscreenBtn');
+            const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+            button.textContent = isFullscreen ? '×' : '⛶';
+            button.setAttribute('aria-label', isFullscreen ? 'Quitter le plein écran' : 'Activer le plein écran');
+            button.title = isFullscreen ? 'Quitter le plein écran' : 'Plein écran';
+        }
+
+        document.addEventListener('fullscreenchange', updateFullscreenButton);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
 
         function renderBoard() {
             const board = document.getElementById('marketBoard');
@@ -246,29 +505,34 @@
             beers.forEach(beer => {
                 const card = document.createElement('div');
                 card.className = 'beer-card';
-                
-                let priceColor = 'var(--accent-up)';
-                if (beer.currentPrice === MAX_PRICE) priceColor = '#ff9800'; 
-                if (beer.currentPrice === beer.minPrice) priceColor = 'var(--primary)';
+                const priceColor = getPriceColor(beer);
+                card.style.borderTopColor = priceColor;
+
+                const history = beer.history && beer.history.length ? beer.history : [beer.currentPrice];
+                const firstPrice = history[0];
+                const change = beer.currentPrice - firstPrice;
+                const changeLabel = change === 0 ? '—' : `${change > 0 ? '+' : ''}${change.toFixed(2)} €`;
 
                 card.innerHTML = `
                     <button class="btn-delete" onclick="deleteBeer(${beer.id})">✖</button>
-                    <div class="beer-name">${beer.name}</div>
-                    <div class="beer-price" style="color: ${priceColor};">
-                        ${beer.currentPrice.toFixed(2)} €
+                    <div class="beer-topline">
+                        <div class="beer-name">${beer.name}</div>
+                        <div class="beer-change" style="color: ${change < 0 ? 'var(--accent-down)' : 'var(--accent-up)'}">${changeLabel}</div>
                     </div>
-                    <div class="beer-stats">
-                        Min: ${beer.minPrice.toFixed(2)} € | Max: 2.50 €
-                    </div>
+                    <div class="beer-price" style="color: ${priceColor};">${beer.currentPrice.toFixed(2)} €</div>
+                    <div class="beer-stats">Min ${beer.minPrice.toFixed(2)} € · Max ${MAX_PRICE.toFixed(2)} €</div>
                     <div class="controls">
-                        <button class="btn-action btn-minus" onclick="removeSale(${beer.id})">-</button>
-                        <span class="sales-counter">Ventes : ${beer.sales}</span>
-                        <button class="btn-action btn-plus" onclick="addSale(${beer.id})">+</button>
+                        <button class="btn-action btn-minus" onclick="removeSale(${beer.id})" aria-label="Annuler une vente">−</button>
+                        <span class="sales-counter">${beer.sales} ventes</span>
+                        <button class="btn-action btn-plus" onclick="addSale(${beer.id})" aria-label="Ajouter une vente">+</button>
                     </div>
                 `;
                 board.appendChild(card);
             });
         }
+
+        loadState();
+        renderBoard();
     </script>
 </body>
 </html>
